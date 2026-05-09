@@ -28,7 +28,6 @@ interface RewindResult {
     pastToPresent: string | null;
     presentToFuture: string | null;
   };
-  model3d: string | null;
   narration?: string | null;
   narrationScript?: string | null;
   poem?: string | null;
@@ -759,23 +758,6 @@ export default function TimeSlider({ result }: TimeSliderProps) {
                 <span className="text-white/15">&rarr;</span>
                 <span className="text-cyan-400/60">{result.scene.future_art_style}</span>
               </div>
-              {result.model3d && (
-                <div className="space-y-2 pt-2">
-                  <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-white/30">
-                    3D Scene &middot; Drag to rotate
-                  </p>
-                  <div className="overflow-hidden rounded-xl border border-white/5 bg-black/40">
-                    {/* @ts-expect-error model-viewer is a web component */}
-                    <model-viewer
-                      src={result.model3d}
-                      alt="3D model of the scene"
-                      auto-rotate
-                      camera-controls
-                      style={{ width: "100%", height: "240px" }}
-                    />
-                  </div>
-                </div>
-              )}
             </div>
           )}
 

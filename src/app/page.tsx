@@ -31,8 +31,8 @@ const INITIAL_STEPS: LoadingStep[] = [
   { label: "Gemini Flash", detail: "Analyzing scene", done: false },
   { label: "GPT Image", detail: "Generating era panels", done: false },
   { label: "Lyria 3", detail: "Composing music", done: false },
-  { label: "ElevenLabs", detail: "Narrating the story", done: false },
-  { label: "fal.ai", detail: "Creating transitions", done: false },
+  { label: "OpenAI TTS", detail: "Narrating the story", done: false },
+  { label: "Veo 2", detail: "Creating transitions", done: false },
 ];
 
 function stepIndexFromMessage(msg: string): number {
@@ -266,7 +266,7 @@ export default function Home() {
             <span className="text-white/10">&middot;</span>
             <span>GPT IMAGE</span>
             <span className="text-white/10">&middot;</span>
-            <span>FAL.AI</span>
+            <span>VEO 2</span>
           </div>
         </footer>
       </main>

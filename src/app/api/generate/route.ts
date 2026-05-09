@@ -1,9 +1,5 @@
 import { analyzeScene, generateMusic, generateNarrationScript, generatePoem } from "@/lib/gemini";
-import {
-  generateTransitionVideo,
-  generate3DModel,
-  uploadToFal,
-} from "@/lib/fal";
+import { generateTransitionVideo } from "@/lib/fal";
 import { generateEraPanel } from "@/lib/openai";
 import { generateNarration } from "@/lib/elevenlabs";
 
@@ -58,7 +54,7 @@ export async function POST(req: Request) {
           return;
         }
 
-        // Step 3: Narration + poem (Gemini — no fal dependency)
+        // Step 3: Narration + poem
         send("status", { step: "Creating narration & finishing touches..." });
 
         const [narrationScript, poem] = await Promise.all([
@@ -70,35 +66,30 @@ export async function POST(req: Request) {
           ? await generateNarration(narrationScript).catch(() => null)
           : null;
 
-        // Step 4: fal-dependent features (videos + 3D) — fully optional
+        // Step 4: Transition videos (Veo) — optional
         let pastToPresent: string | null = null;
         let presentToFuture: string | null = null;
-        let model3d: string | null = null;
 
         try {
           send("status", { step: "Generating transition videos..." });
-          const [pastImageUrl, originalImageUrl] = await Promise.all([
-            uploadToFal(pastImage, "image/png"),
-            uploadToFal(base64, mimeType),
-          ]);
 
           const videoResults = await Promise.allSettled([
             generateTransitionVideo(
-              pastImageUrl,
+              pastImage,
+              "image/png",
               `Smooth time-lapse transition from ${scene.past_art_style} era to modern day. ${scene.scene}. Colors shift from warm sepia to vibrant modern tones. Cinematic camera movement.`
             ),
             generateTransitionVideo(
-              originalImageUrl,
+              base64,
+              mimeType,
               `Smooth futuristic transition from modern day to ${scene.future_art_style}. ${scene.scene}. Colors shift from natural to neon and ethereal. Cinematic transformation.`
             ),
-            generate3DModel(originalImageUrl),
           ]);
 
           pastToPresent = videoResults[0].status === "fulfilled" ? videoResults[0].value : null;
           presentToFuture = videoResults[1].status === "fulfilled" ? videoResults[1].value : null;
-          model3d = videoResults[2].status === "fulfilled" ? videoResults[2].value : null;
         } catch {
-          // fal unavailable — skip videos and 3D, core experience still works
+          // Veo unavailable — skip videos, core experience still works
         }
 
         send("status", { step: "All done! Assembling your timeline..." });
@@ -119,7 +110,6 @@ export async function POST(req: Request) {
             pastToPresent,
             presentToFuture,
           },
-          model3d,
           narration: narrationAudio ? `data:audio/mpeg;base64,${narrationAudio}` : null,
           narrationScript,
           poem,

@@ -1,46 +1,34 @@
-import { createFalClient } from "@fal-ai/client";
+import { GoogleGenAI } from "@google/genai";
 
-const fal = createFalClient({
-  credentials: process.env.FAL_KEY,
-});
-
-export async function uploadToFal(
-  base64: string,
-  mimeType: string
-): Promise<string> {
-  const buffer = Buffer.from(base64, "base64");
-  const blob = new Blob([buffer], { type: mimeType });
-  return fal.storage.upload(blob);
-}
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 export async function generateTransitionVideo(
-  imageUrl: string,
+  imageBase64: string,
+  mimeType: string,
   prompt: string
 ): Promise<string> {
-  const result = await fal.subscribe(
-    "fal-ai/kling-video/v2.1/standard/image-to-video",
-    {
-      input: {
-        prompt,
-        image_url: imageUrl,
-        duration: "5" as const,
+  let operation = await ai.models.generateVideos({
+    model: "veo-2.0-generate-001",
+    source: {
+      prompt,
+      image: {
+        imageBytes: imageBase64,
+        mimeType,
       },
-    }
-  );
-  const data = result.data as { video?: { url?: string } };
-  const url = data?.video?.url;
-  if (!url) throw new Error("Video generation returned no URL");
-  return url;
-}
-
-export async function generate3DModel(imageUrl: string): Promise<string> {
-  const result = await fal.subscribe("fal-ai/triposr", {
-    input: {
-      image_url: imageUrl,
+    },
+    config: {
+      numberOfVideos: 1,
     },
   });
-  const data = result.data as { model_mesh?: { url?: string } };
-  const url = data?.model_mesh?.url;
-  if (!url) throw new Error("3D generation returned no URL");
-  return url;
+
+  while (!operation.done) {
+    await new Promise((resolve) => setTimeout(resolve, 10000));
+    operation = await ai.operations.getVideosOperation({
+      operation: operation,
+    });
+  }
+
+  const uri = operation.response?.generatedVideos?.[0]?.video?.uri;
+  if (!uri) throw new Error("Video generation returned no URI");
+  return uri;
 }

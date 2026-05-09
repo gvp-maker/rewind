@@ -14,7 +14,20 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "REWIND — Travel Through Time",
-  description: "Upload any photo. AI reimagines it across 200 years of history.",
+  description:
+    "Upload any photo. AI reimagines it across 200 years of history.",
+  openGraph: {
+    title: "REWIND — Travel Through Time",
+    description:
+      "Upload any photo. AI reimagines it across 200 years of history with generated artwork, music, narration, and more.",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "REWIND — Travel Through Time",
+    description:
+      "Upload any photo. AI reimagines it across 200 years of history.",
+  },
 };
 
 export default function RootLayout({
@@ -26,14 +39,10 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col bg-[#050508] text-white overflow-x-hidden">
         {children}
-        <script
-          type="module"
-          src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"
-          async
-        />
       </body>
     </html>
   );
