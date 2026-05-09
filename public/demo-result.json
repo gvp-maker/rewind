@@ -1,0 +1,31 @@
+{
+  "_comment": "Replace this file with real API output after a successful generation. Run the app, upload a photo, then save the result JSON here.",
+  "scene": {
+    "scene": "A bustling city skyline at golden hour with modern skyscrapers reflecting warm sunset light",
+    "subjects": "city buildings, skyline, clouds",
+    "setting": "urban",
+    "mood": "contemplative",
+    "colors": "warm gold, deep blue, steel grey",
+    "era_guess": "2020s",
+    "music_past": "A gentle ragtime piano piece with soft brushed drums, evoking 1920s speakeasy warmth",
+    "music_present": "Modern ambient electronic with soft synth pads and a gentle beat, contemplative urban mood",
+    "music_future": "Ethereal cosmic synthesizers with crystalline arpeggios and deep sub-bass, otherworldly and hopeful",
+    "past_art_style": "impressionist",
+    "future_art_style": "solarpunk"
+  },
+  "panels": {
+    "past": null,
+    "present": null,
+    "future": null
+  },
+  "music": {
+    "past": null,
+    "present": null,
+    "future": null
+  },
+  "videos": {
+    "pastToPresent": null,
+    "presentToFuture": null
+  },
+  "model3d": null
+}
